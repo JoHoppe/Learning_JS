@@ -1,1 +1,1 @@
-# LeearningJS
+# LearningJS
