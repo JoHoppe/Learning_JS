@@ -1,6 +1,23 @@
 {
-  "name": "HelloWorld",
+  "name": "learn_js_package",
   "version": "1.0.0",
-  "dependencies": {
-  }
+  "description": "my Js Learning \"Project\"",
+  "main": "README.md",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoHoppe/Learning_JS.git"
+  },
+  "keywords": [
+    "JS"
+  ],
+  "author": "Johannes Hoppe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoHoppe/Learning_JS/issues"
+  },
+  "homepage": "https://github.com/JoHoppe/Learning_JS#readme"
 }

@@ -83,6 +83,11 @@ function calcTotalByType(transactions, type) {
   return totalIncome;
 }
 
+/**
+ *
+ * @param transactions
+ * @returns {number}
+ */
 function highestAmount(transactions) {
   let highestAmount = 0;
   transactions.forEach((element) =>
@@ -97,6 +102,11 @@ function filterTransaction(transaction, key, value) {
   return transaction.filter((element) => element[key] === value);
 }
 
+/**
+ *
+ * @param transaction expects the transaction
+ * @returns {boolean} returns if the 3 ways of calculating the average are the same
+ */
 function averageTransaction(transaction) {
   let count = transaction.length;
   let total = 0;
