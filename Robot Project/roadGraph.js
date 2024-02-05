@@ -116,6 +116,19 @@ function findRoute(graph, from, to) {
   }
 }
 
+function findRoute2(graph, from, to) {
+  let work = [{ at: from, route: [] }];
+  for (let i = 0; i < work.length; i++) {
+    let { at, route } = work[i];
+    for (let place of graph[at]) {
+      if (place === to) return route.concat(place);
+      if (!work.some((w) => w.at === place)) {
+        work.push({ at: place, route: route.concat(place) });
+      }
+    }
+  }
+}
+
 function goalOrientedRobot({ place, parcels }, route) {
   if (route.length === 0) {
     let parcel = parcels[0];
@@ -127,15 +140,31 @@ function goalOrientedRobot({ place, parcels }, route) {
   }
   return { direction: route[0], memory: route.slice(1) };
 }
+
 function goalOrientedRobotV2({ place, parcels }, route) {
   if (route.length === 0) {
     let parcel = parcels[0];
+
     if (parcel.place !== place) {
-      route = findRoute(roadGraph, place, parcel.place);
+      let routes = [];
+
+      for (let singleParcel of parcels) {
+        routes.push(findRoute(roadGraph, place, singleParcel.place));
+      }
+
+      // Sort routes by length
+      routes.sort((a, b) => a.length - b.length);
+
+      for (let currentRoute of routes) {
+        if (currentRoute.length > 0) {
+          return { direction: currentRoute[0], memory: currentRoute.slice(1) };
+        }
+      }
     } else {
       route = findRoute(roadGraph, place, parcel.address);
     }
   }
+
   return { direction: route[0], memory: route.slice(1) };
 }
 
@@ -153,27 +182,43 @@ function routeRobot(state, memory) {
     memory: memory.slice(1),
   };
 }
-let localVillageState= VillageState.random();
-function runRandomRobot(localVillageState){return runRobot(localVillageState, randomRobot)};
-function runRouteRobot(localVillageState){return runRobot(localVillageState, routeRobot, { length: 0 })}
-function runGORobot(localVillageState){return runRobot(localVillageState,goalOrientedRobot,mailRoute)}
-function  runGOV2Robot(localVillageState) {return runRobot(localVillageState,goalOrientedRobotV2,mailRoute)}
+
+let localVillageState = VillageState.random();
+
+function runRandomRobot(localVillageState) {
+  return runRobot(localVillageState, randomRobot);
+}
+
+function runRouteRobot(localVillageState) {
+  return runRobot(localVillageState, routeRobot, { length: 0 });
+}
+
+function runGORobot(localVillageState) {
+  return runRobot(localVillageState, goalOrientedRobot, mailRoute);
+}
+
+function runGOV2Robot(localVillageState) {
+  return runRobot(localVillageState, goalOrientedRobotV2, mailRoute);
+}
 
 //Measuring a robot
 
-function benchmark(runs,...runRobots ){
-  let robotAverage={};
-  for(let robot of runRobots){
-     robotAverage[`${robot.name}`]=0;
+function benchmark(runs, ...runRobots) {
+  let robotAverage = {};
+  for (let robot of runRobots) {
+    robotAverage[`${robot.name}`] = 0;
   }
-  for(let i=0;i<runs;i++){
-    let localVillageState=VillageState.random();
-
-    for(let runLocalRobot of runRobots){
-      robotAverage[`${runLocalRobot.name}`]+=runLocalRobot(localVillageState)/runs;
+  for (let runLocalRobot of runRobots) {
+    for (let i = 0; i < runs; i++) {
+      let localVillageState = VillageState.random();
+      robotAverage[`${runLocalRobot.name}`] +=
+        runLocalRobot(localVillageState) / runs;
     }
-    console.log(robotAverage);
 
+  }
+  for(let robot of runRobots){
+    console.log(`${robot.name}`+": "+ robotAverage[`${robot.name}`]);
   }
 }
-benchmark(50,runGORobot);
+
+benchmark(1000, runGOV2Robot, runGORobot);
