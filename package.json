@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "my Js Learning \"Project\"",
   "main": "README.md",
-  "devDependencies": {},
+  "devDependencies": {
+    "dijkstrajs": "^1.0.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

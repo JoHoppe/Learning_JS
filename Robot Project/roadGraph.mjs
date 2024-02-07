@@ -1,3 +1,7 @@
+import pkg from 'dijkstrajs';
+const { find_path } = pkg;
+
+"use strict";
 const roads = [
   "Alice's House-Bob's House",
   "Alice's House-Cabin",
@@ -48,7 +52,7 @@ function buildGraph(edges) {
   return graph;
 }
 
-roadGraph = buildGraph(roads);
+let roadGraph = buildGraph(roads);
 
 class VillageState {
   constructor(place, parcels) {
@@ -214,11 +218,21 @@ function benchmark(runs, ...runRobots) {
       robotAverage[`${runLocalRobot.name}`] +=
         runLocalRobot(localVillageState) / runs;
     }
-
   }
-  for(let robot of runRobots){
-    console.log(`${robot.name}`+": "+ robotAverage[`${robot.name}`]);
+  for (let robot of runRobots) {
+    console.log(`${robot.name}` + ": " + robotAverage[`${robot.name}`]);
   }
 }
 
-benchmark(1000, runGOV2Robot, runGORobot);
+let graph={}
+for (let node of Object.keys(roadGraph)) {
+  let edges = (graph[node] = {});
+  for (let dest of roadGraph[node]) {
+    edges[dest] = 1;
+  }
+}
+
+
+benchmark(100, runGOV2Robot, runGORobot);
+console.log(find_path(graph, "Post Office", "Cabin"));
+// → ["Post Office", "Alice's House", "Cabin"]
